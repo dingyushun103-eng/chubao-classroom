@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="楚宝课堂 —— 随时随地学习的在线学习平台，包含语文、数学、英语等科目" />
+  <title>楚宝课堂 · 响应式学习网站</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="#home">📚 楚宝课堂</a>
+      <nav class="nav-desktop">
+        <a href="#home">首页</a>
+        <a href="#subjects">科目</a>
+        <a href="#quiz">练习</a>
+      </nav>
+      <button class="menu-btn" id="menuBtn" aria-label="打开菜单">☰</button>
+    </div>
+    <!-- 手机端抽屉菜单 -->
+    <nav class="nav-mobile" id="navMobile">
+      <a href="#home">🏠 首页</a>
+      <a href="#subjects">📖 科目</a>
+      <a href="#quiz">✏️ 练习</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 首页 Hero -->
+    <section class="hero" id="home">
+      <div class="container">
+        <h1>让学习变得<span class="highlight">简单有趣</span></h1>
+        <p class="hero-sub">语文 · 数学 · 英语 · 物理 · 化学，随时随地开始学习</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#subjects">开始学习</a>
+          <a class="btn btn-outline" href="#quiz">去做练习</a>
+        </div>
+        <div class="hero-stats">
+          <div><strong data-count="5">0</strong><span>门科目</span></div>
+          <div><strong data-count="120">0</strong><span>知识点</span></div>
+          <div><strong data-count="300">0</strong><span>练习题</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 科目卡片 -->
+    <section class="section" id="subjects">
+      <div class="container">
+        <h2 class="section-title">选择你的科目</h2>
+        <p class="section-desc">点击卡片进入科目知识清单</p>
+        <div class="grid subjects-grid" id="subjectsGrid"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- 练习题 -->
+    <section class="section section-alt" id="quiz">
+      <div class="container narrow">
+        <h2 class="section-title">随堂小练习</h2>
+        <p class="section-desc">选择科目开始答题，即时反馈对错</p>
+
+        <div class="quiz-tabs" id="quizTabs"></div>
+
+        <div class="quiz-card" id="quizCard">
+          <div class="quiz-progress"><div id="quizProgressBar"></div></div>
+          <p class="quiz-counter" id="quizCounter"></p>
+          <h3 class="quiz-question" id="quizQuestion"></h3>
+          <div class="quiz-options" id="quizOptions"></div>
+          <p class="quiz-feedback" id="quizFeedback"></p>
+          <button class="btn btn-primary quiz-next" id="quizNext" hidden>下一题 →</button>
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- 底部 -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 楚宝课堂 · 用心做学习</p>
+    </div>
+  </footer>
+
+  <!-- 手机端底部导航 -->
+  <nav class="tabbar">
+    <a href="#home" class="active"><span>🏠</span>首页</a>
+    <a href="#subjects"><span>📖</span>科目</a>
+    <a href="#quiz"><span>✏️</span>练习</a>
+    
+  </nav>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
