@@ -13,6 +13,36 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* ============ 深色模式 ============ */
+body.dark {
+  --bg: #10131c;
+  --card: #1a1f2e;
+  --text: #e6e9f2;
+  --text-light: #9aa1b5;
+  --shadow: 0 4px 20px rgba(0, 0, 0, .45);
+}
+body.dark .header { background: rgba(16, 19, 28, .88); box-shadow: 0 1px 8px rgba(0, 0, 0, .3); }
+body.dark .hero { background: linear-gradient(160deg, #171c30 0%, #10131c 70%); }
+body.dark .section-alt { background: #141826; }
+body.dark .nav-mobile { background: #1a1f2e; }
+body.dark .nav-mobile a { border-color: #262c40; }
+body.dark .quiz-tab { background: var(--card); border-color: #333b55; color: var(--text); }
+body.dark .quiz-option { background: #20263a; border-color: #333b55; color: var(--text); }
+body.dark .quiz-option:hover:not(:disabled) { background: #263052; }
+body.dark code { background: #263052; }
+
+/* 主题切换按钮 */
+.theme-btn {
+  border: none;
+  background: none;
+  font-size: 1.35rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 10px;
+  transition: background .2s;
+}
+.theme-btn:hover { background: rgba(79, 110, 247, .12); }
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -51,6 +81,8 @@ a { color: inherit; text-decoration: none; }
 .nav-desktop { display: none; gap: 28px; }
 .nav-desktop a { font-weight: 500; transition: color .2s; }
 .nav-desktop a:hover { color: var(--primary); }
+
+.header-actions { display: flex; align-items: center; gap: 6px; }
 
 .menu-btn {
   display: block;
@@ -132,6 +164,92 @@ a { color: inherit; text-decoration: none; }
 .subject-card h3 { margin: 10px 0 4px; }
 .subject-card p { color: var(--text-light); font-size: .88rem; }
 
+/* 知识点标签 */
+.subject-card .tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
+.subject-card .tag {
+  font-size: .72rem;
+  color: var(--accent, var(--primary));
+  background: color-mix(in srgb, var(--accent, var(--primary)) 12%, transparent);
+  padding: 2px 10px;
+  border-radius: 99px;
+}
+
+/* ============ 弹窗 ============ */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(15, 18, 30, .55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.modal-mask.open { opacity: 1; pointer-events: auto; }
+.modal {
+  background: var(--card);
+  color: var(--text);
+  border-radius: var(--radius);
+  max-width: 480px;
+  width: 100%;
+  padding: 30px 26px;
+  transform: translateY(24px) scale(.97);
+  transition: transform .25s;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+  border-top: 5px solid var(--accent, var(--primary));
+}
+.modal-mask.open .modal { transform: none; }
+.modal .modal-icon { font-size: 2.6rem; text-align: center; }
+.modal h3 { text-align: center; font-size: 1.4rem; margin: 8px 0 4px; }
+.modal .modal-desc { text-align: center; color: var(--text-light); font-size: .92rem; }
+.modal ul.point-list { list-style: none; margin: 20px 0 24px; display: grid; gap: 10px; }
+.modal ul.point-list li {
+  background: color-mix(in srgb, var(--accent, var(--primary)) 8%, transparent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: .95rem;
+}
+.modal .modal-close {
+  position: absolute;
+  top: 10px; right: 14px;
+  border: none; background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-light);
+}
+.modal { position: relative; }
+
+/* ============ 滚动渐入 ============ */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ============ 返回顶部 ============ */
+.back-top {
+  position: fixed;
+  right: 18px;
+  bottom: calc(var(--tabbar-h) + 18px);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(79, 110, 247, .4);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: all .25s;
+  z-index: 90;
+}
+.back-top.show { opacity: 1; pointer-events: auto; transform: none; }
+@media (min-width: 768px) { .back-top { bottom: 24px; } }
+
 /* ============ 练习模块 ============ */
 .quiz-tabs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
 .quiz-tab {
@@ -191,6 +309,16 @@ a { color: inherit; text-decoration: none; }
 
 .quiz-next { width: 100%; margin-top: 6px; }
 
+#quizStages { margin-top: -12px; margin-bottom: 20px; }
+#quizStages .stage-subtab { font-size: .85rem; padding: 6px 18px; }
+
+.quiz-best {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--text-light);
+  margin-top: 14px;
+}
+
 /* ============ 关于 ============ */
 .about-box {
   background: var(--card);
@@ -208,6 +336,7 @@ code { background: #f0f3ff; padding: 2px 6px; border-radius: 6px; font-size: .9e
   padding: 32px 0 calc(32px + var(--tabbar-h));
   font-size: .88rem;
 }
+.footer.no-tabbar { padding-bottom: 32px; }
 
 .tabbar {
   position: fixed;
