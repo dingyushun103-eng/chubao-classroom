@@ -16,14 +16,19 @@
         <a href="#home">首页</a>
         <a href="#subjects">科目</a>
         <a href="#quiz">练习</a>
+        <a href="wrong.html">📕 错题本</a>
       </nav>
-      <button class="menu-btn" id="menuBtn" aria-label="打开菜单">☰</button>
+      <div class="header-actions">
+        <button class="theme-btn" id="themeBtn" aria-label="切换深色模式">🌙</button>
+        <button class="menu-btn" id="menuBtn" aria-label="打开菜单">☰</button>
+      </div>
     </div>
     <!-- 手机端抽屉菜单 -->
     <nav class="nav-mobile" id="navMobile">
       <a href="#home">🏠 首页</a>
       <a href="#subjects">📖 科目</a>
       <a href="#quiz">✏️ 练习</a>
+      <a href="wrong.html">📕 错题本</a>
     </nav>
   </header>
 
@@ -38,7 +43,7 @@
           <a class="btn btn-outline" href="#quiz">去做练习</a>
         </div>
         <div class="hero-stats">
-          <div><strong data-count="5">0</strong><span>门科目</span></div>
+          <div><strong data-count="3">0</strong><span>门科目</span></div>
           <div><strong data-count="120">0</strong><span>知识点</span></div>
           <div><strong data-count="300">0</strong><span>练习题</span></div>
         </div>
@@ -48,8 +53,8 @@
     <!-- 科目卡片 -->
     <section class="section" id="subjects">
       <div class="container">
-        <h2 class="section-title">选择你的科目</h2>
-        <p class="section-desc">点击卡片进入科目知识清单</p>
+        <h2 class="section-title reveal">选择你的科目</h2>
+        <p class="section-desc reveal">语文 / 数学 / 英语按年级学习，点击卡片查看知识清单</p>
         <div class="grid subjects-grid" id="subjectsGrid"><!-- JS 渲染 --></div>
       </div>
     </section>
@@ -61,6 +66,11 @@
         <p class="section-desc">选择科目开始答题，即时反馈对错</p>
 
         <div class="quiz-tabs" id="quizTabs"></div>
+        <div class="quiz-tabs" id="quizStages" hidden></div>
+        <div class="quiz-tabs" id="quizGrades" hidden></div>
+        <div style="text-align:center;margin:-8px 0 22px">
+          <button class="btn btn-outline" id="drillBtn">🎲 随机口算训练 · 每次10题</button>
+        </div>
 
         <div class="quiz-card" id="quizCard">
           <div class="quiz-progress"><div id="quizProgressBar"></div></div>
@@ -69,6 +79,7 @@
           <div class="quiz-options" id="quizOptions"></div>
           <p class="quiz-feedback" id="quizFeedback"></p>
           <button class="btn btn-primary quiz-next" id="quizNext" hidden>下一题 →</button>
+          <p class="quiz-best"></p>
         </div>
       </div>
     </section>
@@ -83,12 +94,27 @@
     </div>
   </footer>
 
+  <!-- 科目详情弹窗 -->
+  <div class="modal-mask" id="modalMask">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="modalClose" aria-label="关闭">✕</button>
+      <div class="modal-icon" id="modalIcon"></div>
+      <h3 id="modalTitle"></h3>
+      <p class="modal-desc" id="modalDesc"></p>
+      <ul class="point-list" id="modalPoints"></ul>
+      <button class="btn btn-primary" id="modalQuizBtn" style="width:100%">去做练习 →</button>
+    </div>
+  </div>
+
+  <!-- 返回顶部 -->
+  <button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
+
   <!-- 手机端底部导航 -->
   <nav class="tabbar">
     <a href="#home" class="active"><span>🏠</span>首页</a>
     <a href="#subjects"><span>📖</span>科目</a>
     <a href="#quiz"><span>✏️</span>练习</a>
-    
+    <a href="wrong.html"><span>📕</span>错题本</a>
   </nav>
 
   <script src="js/data.js"></script>
