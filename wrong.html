@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="楚宝课堂 · 错题本，拍照收录错题，随时复习" />
+  <meta name="theme-color" content="#4f6ef7" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E" />
   <title>错题本 · 楚宝课堂</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
@@ -84,6 +86,58 @@
     .nb-chinese.active { background: #ef4444; border-color: #ef4444; }
     .nb-math.active { background: #3b82f6; border-color: #3b82f6; }
     .nb-english.active { background: #f59e0b; border-color: #f59e0b; }
+
+    /* ---------- 复习模式 ---------- */
+    .review-bar {
+      width: min(680px, 100%);
+      margin: 0 auto 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px 18px;
+      font-size: .92rem;
+      color: var(--text-light);
+    }
+    .review-bar .btn { padding: 9px 22px; font-size: .92rem; }
+    .review-bar .btn:disabled { opacity: .5; cursor: default; transform: none; }
+
+    .review-card {
+      width: min(680px, 100%);
+      margin: 0 auto 80px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 22px;
+    }
+    .review-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .review-progress { font-size: .85rem; color: var(--text-light); }
+    .review-exit {
+      border: none; background: none; cursor: pointer;
+      color: var(--text-light); font-size: .85rem; padding: 6px 10px; border-radius: 8px;
+    }
+    .review-exit:hover { background: color-mix(in srgb, var(--text-light) 14%, transparent); }
+    .review-body { min-height: 120px; }
+    .review-img { display: block; width: 100%; max-height: 420px; object-fit: contain; border-radius: 12px; background: #0001; }
+    .review-tip { color: var(--text-light); font-size: .9rem; margin-top: 12px; text-align: center; }
+    .review-done { text-align: center; padding: 30px 0; color: var(--text); font-weight: 600; }
+    .review-done .big { font-size: 2.6rem; display: block; margin-bottom: 8px; }
+    .review-reveal { margin-top: 6px; }
+    .review-actions { display: flex; gap: 12px; margin-top: 18px; }
+    .review-actions .btn { flex: 1; }
+
+    /* ---------- 错题卡操作行 & 已掌握 ---------- */
+    .note-actions { display: flex; justify-content: flex-end; gap: 6px; padding: 0 12px 12px; }
+    .restore-btn {
+      border: none; background: none; cursor: pointer;
+      color: var(--primary); font-size: .85rem; padding: 4px 8px; border-radius: 8px;
+    }
+    .restore-btn:hover { background: color-mix(in srgb, var(--primary) 12%, transparent); }
+    .note-card.mastered { opacity: .62; }
+    .note-card.mastered img { filter: grayscale(.4); }
   </style>
 </head>
 <body>
@@ -119,6 +173,26 @@
         <p class="upload-tip">图片仅保存在你自己的设备上，不会上传到网络</p>
       </div>
 
+      <!-- 复习入口栏 -->
+      <div class="review-bar" id="reviewBar" hidden>
+        <span id="reviewCount"></span>
+        <button class="btn btn-primary" id="reviewBtn">🧠 开始复习</button>
+      </div>
+
+      <!-- 复习模式卡片 -->
+      <div class="review-card" id="reviewCard" hidden>
+        <div class="review-head">
+          <span class="review-progress" id="reviewProgress"></span>
+          <button class="review-exit" id="reviewExit">✕ 退出复习</button>
+        </div>
+        <div class="review-body" id="reviewBody"></div>
+        <p class="quiz-feedback" id="reviewFeedback"></p>
+        <div class="review-actions">
+          <button class="btn btn-outline" id="reviewMaster">✅ 标记已掌握</button>
+          <button class="btn btn-primary" id="reviewNext">下一题 →</button>
+        </div>
+      </div>
+
       <!-- 错题列表 -->
       <div class="note-list" id="noteList"></div>
     </div>
@@ -126,7 +200,7 @@
 
   <footer class="footer no-tabbar">
     <div class="container">
-      <p>© 2025 楚宝课堂 · 用心做学习</p>
+      <p>© 2026 楚宝课堂 · 用心做学习</p>
     </div>
   </footer>
 
