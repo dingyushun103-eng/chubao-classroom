@@ -56,19 +56,13 @@ function showStage(subjectId, stageId) {
 
   stage.grades.forEach((grade, i) => {
     const points = content[i] || [];
-    const card = document.createElement("article");
+    const card = document.createElement("a");
     card.className = "grade-card";
+    card.href = `grade.html?id=${subjectId}&grade=${encodeURIComponent(grade)}`;
     card.innerHTML = `
       <h3>${grade}</h3>
-      <div class="count">共 ${points.length} 个知识模块 · 点击展开详情</div>
-      <ul>${points
-        .map((p) => {
-          const [title, detail] = Array.isArray(p) ? p : [p, ""];
-          return `<li><b>✅ ${title}</b>${detail ? `<span>${detail}</span>` : ""}</li>`;
-        })
-        .join("")}</ul>
+      <div class="count">共 ${points.length} 个知识模块 · 点击进入 →</div>
     `;
-    card.addEventListener("click", () => card.classList.toggle("open"));
     grid.appendChild(card);
   });
 }
