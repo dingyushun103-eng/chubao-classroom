@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="楚宝课堂 · 分年级知识清单详情页，知识模块平铺展示" />
+  <meta name="theme-color" content="#4f6ef7" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E" />
+  <title>年级知识清单 · 楚宝课堂</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .grade-hero {
+      padding: 48px 0 36px;
+      text-align: center;
+      background: linear-gradient(160deg, #eef2ff 0%, var(--bg) 70%);
+      border-bottom-left-radius: 32px;
+      border-bottom-right-radius: 32px;
+    }
+    body.dark .grade-hero { background: linear-gradient(160deg, #171c30 0%, var(--bg) 70%); }
+    .grade-hero .icon { font-size: 3rem; }
+    .grade-hero h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); margin-top: 6px; }
+    .grade-hero p { color: var(--text-light); margin-top: 8px; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .95rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .grade-tabs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 30px 0 8px; }
+    .grade-tab {
+      padding: 10px 26px;
+      border-radius: 999px;
+      border: 1.5px solid #dfe3ee;
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all .2s;
+    }
+    .grade-tab.active { background: var(--accent, var(--primary)); border-color: var(--accent, var(--primary)); color: #fff; }
+    .grade-tab:not(.active):hover { border-color: var(--accent, var(--primary)); color: var(--accent, var(--primary)); }
+    body.dark .grade-tab { border-color: #333b55; }
+
+    .kp-list { display: grid; gap: 20px; margin: 28px 0 70px; }
+    .kp-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 22px;
+      border-top: 4px solid var(--accent, var(--primary));
+    }
+    .kp-card h3 { font-size: 1.12rem; margin-bottom: 8px; }
+    .kp-detail { color: var(--text-light); font-size: .92rem; line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">📚 楚宝课堂</a>
+      <div class="header-actions">
+        <a style="font-size:.9rem;color:var(--primary);font-weight:600" href="wrong.html">📕 错题本</a>
+        <button class="theme-btn" id="themeBtn" aria-label="切换深色模式">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="grade-hero">
+      <div class="container">
+        <a class="back-link" id="backLink" href="index.html">← 返回年级选择</a>
+        <div class="icon" id="gIcon"></div>
+        <h1 id="gTitle"></h1>
+        <p id="gDesc"></p>
+
+        <div class="grade-tabs" id="gradeTabs"></div>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="kp-list" id="kpList"><!-- JS 渲染 --></div>
+    </div>
+  </main>
+
+  <footer class="footer no-tabbar">
+    <div class="container">
+      <p>© 2026 楚宝课堂 · 用心做学习</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/grade.js"></script>
+</body>
+</html>
