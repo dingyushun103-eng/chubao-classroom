@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="楚宝课堂 · 数学口算专项练习，随机生成题库，支持加减乘除与难度档位" />
+  <meta name="theme-color" content="#4f6ef7" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E" />
+  <title>数学口算专项练习 · 楚宝课堂</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .drill-hero { text-align: center; padding: 44px 0 8px; }
+    .drill-hero h1 { font-size: clamp(1.5rem, 4.5vw, 2.1rem); }
+    .drill-hero p { color: var(--text-light); margin-top: 6px; font-size: .95rem; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .95rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .drill-main { margin-bottom: 70px; }
+    .drill-panel { margin: 22px 0; }
+    .drill-panel #startBtn { margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">📚 楚宝课堂</a>
+      <div class="header-actions">
+        <a href="wrong.html" style="font-size:.9rem;color:var(--primary);font-weight:600">📕 错题本</a>
+        <button class="theme-btn" id="themeBtn" aria-label="切换深色模式">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container narrow drill-main">
+    <section class="drill-hero">
+      <a class="back-link" href="index.html">← 返回首页</a>
+      <h1>🎲 数学口算专项练习</h1>
+      <p>选择运算类型和难度，每次随机生成 10 题，做完自动计时计分</p>
+    </section>
+
+    <div class="drill-panel" id="drillPanel">
+      <div class="drill-row">
+        <span class="drill-label">运算</span>
+        <div id="drillOps">
+          <button class="drill-chip active" data-op="addsub">加减法</button>
+          <button class="drill-chip" data-op="add">加法</button>
+          <button class="drill-chip" data-op="sub">减法</button>
+          <button class="drill-chip" data-op="mul">乘法</button>
+          <button class="drill-chip" data-op="div">除法</button>
+          <button class="drill-chip" data-op="mixed">四则混合</button>
+        </div>
+      </div>
+      <div class="drill-row">
+        <span class="drill-label">难度</span>
+        <div id="drillLevels">
+          <button class="drill-chip active" data-level="easy">10以内</button>
+          <button class="drill-chip" data-level="medium">20以内</button>
+          <button class="drill-chip" data-level="hard">100以内</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="startBtn">▶ 开始练习 · 每次10题</button>
+    </div>
+
+    <div class="quiz-card" id="quizCard" hidden>
+      <div class="quiz-progress"><div id="quizProgressBar"></div></div>
+      <p class="quiz-counter" id="quizCounter"></p>
+      <h3 class="quiz-question" id="quizQuestion"></h3>
+      <div class="quiz-options" id="quizOptions"></div>
+      <p class="quiz-feedback" id="quizFeedback"></p>
+      <button class="btn btn-primary quiz-next" id="quizNext" hidden>下一题 →</button>
+    </div>
+  </main>
+
+  <footer class="footer no-tabbar">
+    <div class="container">
+      <p>© 2026 楚宝课堂 · 用心做学习</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/drill.js"></script>
+</body>
+</html>
