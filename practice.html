@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="楚宝课堂 · 语文人教版分册练习与英语外研版单元单词练习" />
+  <meta name="theme-color" content="#4f6ef7" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E" />
+  <title>专项练习 · 楚宝课堂</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .p-hero { text-align: center; padding: 44px 0 8px; }
+    .p-hero h1 { font-size: clamp(1.5rem, 4.5vw, 2.1rem); }
+    .p-hero p { color: var(--text-light); margin-top: 6px; font-size: .95rem; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .95rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .p-main { margin-bottom: 70px; }
+    .sel-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin: 22px 0;
+    }
+    .sel-hint { font-size: .9rem; color: var(--text-light); margin-bottom: 12px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 10px; }
+    .chips:last-child { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">📚 楚宝课堂</a>
+      <div class="header-actions">
+        <a href="wrong.html" style="font-size:.9rem;color:var(--primary);font-weight:600">📕 错题本</a>
+        <button class="theme-btn" id="themeBtn" aria-label="切换深色模式">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container narrow p-main">
+    <section class="p-hero">
+      <a class="back-link" href="index.html">← 返回首页</a>
+      <div class="icon" id="pIcon" style="font-size:3rem"></div>
+      <h1 id="pTitle"></h1>
+      <p id="pDesc"></p>
+    </section>
+
+    <!-- 选择区：语文分册 / 英语 年级→册→单元 -->
+    <div class="sel-card" id="pSelect"></div>
+
+    <!-- 答题卡 -->
+    <div class="quiz-card" id="pCard" hidden>
+      <div class="quiz-progress"><div id="pProgressBar"></div></div>
+      <p class="quiz-counter" id="pCounter"></p>
+      <h3 class="quiz-question" id="pQuestion"></h3>
+      <div class="quiz-options" id="pOptions"></div>
+      <p class="quiz-feedback" id="pFeedback"></p>
+      <button class="btn btn-primary quiz-next" id="pNext" hidden>下一题 →</button>
+    </div>
+  </main>
+
+  <footer class="footer no-tabbar">
+    <div class="container">
+      <p>© 2026 楚宝课堂 · 用心做学习</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/practice.js"></script>
+</body>
+</html>
