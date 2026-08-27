@@ -55,11 +55,24 @@ function dbDelete(id) {
   );
 }
 
+function dbPut(note) {
+  return openDB().then(
+    (db) =>
+      new Promise((resolve, reject) => {
+        const tx = db.transaction("notes", "readwrite");
+        tx.objectStore("notes").put(note);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      })
+  );
+}
+
 /* ---------- 页面初始化 ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initTabs();
   initUpload();
+  initReview();
   renderNotes();
 });
 
@@ -129,6 +142,18 @@ async function renderNotes() {
   list.innerHTML = "";
   const notes = await dbGetAll(currentNbSubject);
 
+  // 复习入口栏：显示待复习（未掌握）数量
+  const pending = notes.filter((n) => !n.mastered).length;
+  const bar = document.getElementById("reviewBar");
+  const barCount = document.getElementById("reviewCount");
+  if (bar && barCount) {
+    bar.hidden = !notes.length;
+    barCount.textContent = pending
+      ? `共 ${notes.length} 题 · 待复习 ${pending} 题`
+      : `共 ${notes.length} 题 · 全部已掌握 🎉`;
+    document.getElementById("reviewBtn").disabled = !pending;
+  }
+
   if (!notes.length) {
     list.innerHTML = `
       <div class="empty-state">
@@ -141,26 +166,33 @@ async function renderNotes() {
 
   for (const note of notes) {
     const card = document.createElement("article");
-    card.className = "note-card";
+    card.className = "note-card" + (note.mastered ? " mastered" : "");
     const date = new Date(note.created).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
     const badge = `<span class="badge" style="background:${NB_SUBJECTS[note.subject].color}">${NB_SUBJECTS[note.subject].name}</span>`;
+    const masteredBadge = note.mastered ? `<span class="badge" style="background:#22c55e">✅ 已掌握</span>` : "";
 
     if (note.kind === "image" && note.img instanceof Blob) {
       const url = URL.createObjectURL(note.img);
       card.innerHTML = `
         <img src="${url}" alt="错题照片" loading="lazy" />
         <div class="note-body">
-          <div class="note-meta">${badge}<span>${date}</span></div>
+          <div class="note-meta">${badge}${masteredBadge}<span>${date}</span></div>
         </div>
-        <button class="del-btn">🗑 删除</button>`;
+        <div class="note-actions">
+          ${note.mastered ? '<button class="restore-btn">↩ 恢复复习</button>' : ""}
+          <button class="del-btn">🗑 删除</button>
+        </div>`;
     } else {
       card.innerHTML = `
         <div class="note-body">
           <p class="note-text">${note.title}</p>
           <p class="answer-line">✅ 正确答案：${note.answerText}</p>
-          <div class="note-meta">${badge}<span>${date} · 来自随堂练习</span></div>
+          <div class="note-meta">${badge}${masteredBadge}<span>${date} · 来自随堂练习</span></div>
         </div>
-        <button class="del-btn">🗑 删除</button>`;
+        <div class="note-actions">
+          ${note.mastered ? '<button class="restore-btn">↩ 恢复复习</button>' : ""}
+          <button class="del-btn">🗑 删除</button>
+        </div>`;
     }
 
     card.querySelector(".del-btn").addEventListener("click", async () => {
@@ -168,25 +200,121 @@ async function renderNotes() {
       await dbDelete(note.id);
       renderNotes();
     });
+    card.querySelector(".restore-btn")?.addEventListener("click", async () => {
+      note.mastered = false;
+      await dbPut(note);
+      renderNotes();
+    });
 
     list.appendChild(card);
   }
 }
 
-/* ---------- 供练习模块调用：自动收录答错的题目 ---------- */
-async function addWrongQuestion(subjectId, question, options, answerIndex) {
-  try {
-    await dbAdd({
-      subject: subjectId,
-      kind: "text",
-      title: `${question}<br />你选了：${options.find ? "" : ""}`,
-      options,
-      answerIndex,
-      answerText: options[answerIndex],
-      created: Date.now(),
+/* ---------- 复习模式：隐藏答案自测、标记已掌握 ---------- */
+let reviewQueue = [];
+let reviewIndex = 0;
+let reviewAnswered = false;
+
+function initReview() {
+  document.getElementById("reviewBtn")?.addEventListener("click", startReview);
+  document.getElementById("reviewExit")?.addEventListener("click", exitReview);
+  document.getElementById("reviewMaster")?.addEventListener("click", async () => {
+    const note = reviewQueue[reviewIndex];
+    if (!note) return;
+    note.mastered = true;
+    await dbPut(note);
+    reviewQueue.splice(reviewIndex, 1); // 已掌握即移出本轮队列
+    renderReviewNote();
+  });
+}
+
+async function startReview() {
+  const notes = await dbGetAll(currentNbSubject);
+  reviewQueue = notes.filter((n) => !n.mastered);
+  reviewIndex = 0;
+  if (!reviewQueue.length) return;
+
+  document.getElementById("noteList").hidden = true;
+  document.querySelector(".upload-zone").hidden = true;
+  document.getElementById("reviewBar").hidden = true;
+  document.getElementById("reviewCard").hidden = false;
+  renderReviewNote();
+}
+
+function exitReview() {
+  document.getElementById("reviewCard").hidden = true;
+  document.getElementById("noteList").hidden = false;
+  document.querySelector(".upload-zone").hidden = false;
+  document.getElementById("reviewBar").hidden = false;
+  renderNotes();
+}
+
+function renderReviewNote() {
+  const body = document.getElementById("reviewBody");
+  const feedback = document.getElementById("reviewFeedback");
+  const progress = document.getElementById("reviewProgress");
+  const masterBtn = document.getElementById("reviewMaster");
+  const nextBtn = document.getElementById("reviewNext");
+  feedback.textContent = "";
+  feedback.className = "quiz-feedback";
+  reviewAnswered = false;
+
+  // 本轮复习完成
+  if (reviewIndex >= reviewQueue.length) {
+    progress.textContent = "复习完成";
+    body.innerHTML = `<div class="review-done"><span class="big">🎉</span>本轮复习完成，继续保持！</div>`;
+    masterBtn.hidden = true;
+    nextBtn.textContent = "↩ 返回错题本";
+    nextBtn.onclick = exitReview;
+    return;
+  }
+
+  nextBtn.onclick = () => { reviewIndex++; renderReviewNote(); };
+  const note = reviewQueue[reviewIndex];
+  progress.textContent = `第 ${reviewIndex + 1} / ${reviewQueue.length} 题`;
+  masterBtn.hidden = false;
+  nextBtn.textContent = reviewIndex + 1 >= reviewQueue.length ? "完成 ✓" : "下一题 →";
+
+  if (note.options && note.options.length) {
+    // 有选项：隐藏答案自测
+    body.innerHTML = `<h3 class="quiz-question">${note.title}</h3><div class="quiz-options"></div>`;
+    const optionsEl = body.querySelector(".quiz-options");
+    note.options.forEach((opt, i) => {
+      const btn = document.createElement("button");
+      btn.className = "quiz-option";
+      btn.textContent = opt;
+      btn.addEventListener("click", () => {
+        if (reviewAnswered) return;
+        reviewAnswered = true;
+        const buttons = optionsEl.querySelectorAll(".quiz-option");
+        buttons.forEach((b) => (b.disabled = true));
+        buttons[note.answerIndex].classList.add("correct");
+        if (i === note.answerIndex) {
+          feedback.textContent = "✅ 回答正确！";
+          feedback.classList.add("ok");
+        } else {
+          btn.classList.add("wrong");
+          feedback.textContent = "❌ 再想想，正确答案已标出";
+          feedback.classList.add("err");
+        }
+      });
+      optionsEl.appendChild(btn);
     });
-  } catch (e) {
-    /* 静默失败，不打断答题流程 */
+  } else if (note.kind === "image" && note.img instanceof Blob) {
+    // 图片错题：直接看图自测
+    const url = URL.createObjectURL(note.img);
+    body.innerHTML = `<img class="review-img" src="${url}" alt="错题照片" /><p class="review-tip">看着题目在心里作答，然后点击下方按钮</p>`;
+  } else {
+    // 老数据（无选项）：先想后显示答案
+    body.innerHTML = `
+      <h3 class="quiz-question">${note.title}</h3>
+      <p class="answer-line" hidden>✅ 正确答案：${note.answerText}</p>
+      <button class="btn btn-outline review-reveal">👀 显示答案</button>`;
+    body.querySelector(".review-reveal").addEventListener("click", (e) => {
+      body.querySelector(".answer-line").hidden = false;
+      e.target.hidden = true;
+      reviewAnswered = true;
+    });
   }
 }
 
