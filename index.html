@@ -3,8 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="楚宝课堂 —— 随时随地学习的在线学习平台，包含语文、数学、英语等科目" />
-  <title>楚宝课堂 · 响应式学习网站</title>
+  <meta name="description" content="楚宝课堂 —— 小学语数英在线学习平台，分年级知识清单 + 随堂练习 + 随机口算 + 错题本，随时随地开始学习" />
+  <meta name="theme-color" content="#4f6ef7" />
+  <link rel="canonical" href="https://dingyushun103-eng.github.io/chubao-classroom/" />
+  <meta property="og:title" content="楚宝课堂 · 小学语数英学习平台" />
+  <meta property="og:description" content="分年级知识清单、随堂练习、随机口算训练与错题本，随时随地开始学习" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dingyushun103-eng.github.io/chubao-classroom/" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E" />
+  <title>楚宝课堂 · 小学语数英在线学习平台</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -37,15 +44,15 @@
     <section class="hero" id="home">
       <div class="container">
         <h1>让学习变得<span class="highlight">简单有趣</span></h1>
-        <p class="hero-sub">语文 · 数学 · 英语 · 物理 · 化学，随时随地开始学习</p>
+        <p class="hero-sub">语文 · 数学 · 英语，小学三科随时随地开始学习</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#subjects">开始学习</a>
           <a class="btn btn-outline" href="#quiz">去做练习</a>
         </div>
         <div class="hero-stats">
-          <div><strong data-count="3">0</strong><span>门科目</span></div>
-          <div><strong data-count="120">0</strong><span>知识点</span></div>
-          <div><strong data-count="300">0</strong><span>练习题</span></div>
+          <div><strong id="statSubjects" data-count="0">0</strong><span>门科目</span></div>
+          <div><strong id="statPoints" data-count="0">0</strong><span>知识点</span></div>
+          <div><strong id="statQuestions" data-count="0">0</strong><span>练习题</span></div>
         </div>
       </div>
     </section>
@@ -59,27 +66,31 @@
       </div>
     </section>
 
-    <!-- 练习题 -->
+    <!-- 练习区：三科独立练习页入口 -->
     <section class="section section-alt" id="quiz">
-      <div class="container narrow">
-        <h2 class="section-title">随堂小练习</h2>
-        <p class="section-desc">选择科目开始答题，即时反馈对错</p>
+      <div class="container">
+        <h2 class="section-title">练习专区</h2>
+        <p class="section-desc">三科各有独立练习页，选好内容随时开始</p>
 
-        <div class="quiz-tabs" id="quizTabs"></div>
-        <div class="quiz-tabs" id="quizStages" hidden></div>
-        <div class="quiz-tabs" id="quizGrades" hidden></div>
-        <div style="text-align:center;margin:-8px 0 22px">
-          <button class="btn btn-outline" id="drillBtn">🎲 随机口算训练 · 每次10题</button>
-        </div>
-
-        <div class="quiz-card" id="quizCard">
-          <div class="quiz-progress"><div id="quizProgressBar"></div></div>
-          <p class="quiz-counter" id="quizCounter"></p>
-          <h3 class="quiz-question" id="quizQuestion"></h3>
-          <div class="quiz-options" id="quizOptions"></div>
-          <p class="quiz-feedback" id="quizFeedback"></p>
-          <button class="btn btn-primary quiz-next" id="quizNext" hidden>下一题 →</button>
-          <p class="quiz-best"></p>
+        <div class="practice-entries">
+          <a class="practice-entry" href="practice.html?subject=chinese" style="--accent:#ef4444">
+            <div class="icon">📖</div>
+            <h3>语文 · 分册练习</h3>
+            <p>人教版（部编版）一年级上/下 ~ 三年级上/下，常见古诗词 + 字词，每册 10 题</p>
+            <span class="go">开始练习 →</span>
+          </a>
+          <a class="practice-entry" href="practice.html?subject=english" style="--accent:#f59e0b">
+            <div class="icon">🔤</div>
+            <h3>英语 · 单元单词练习</h3>
+            <p>外研社《新交际》1-2 年级四册 24 个单元，按 Unit 1-6 顺序全部单词出题</p>
+            <span class="go">开始练习 →</span>
+          </a>
+          <a class="practice-entry" href="drill.html" style="--accent:#3b82f6">
+            <div class="icon">🔢</div>
+            <h3>数学 · 口算专项</h3>
+            <p>加减乘除与四则混合 × 10/20/100 以内及口诀表档位，随机出题、计时计分</p>
+            <span class="go">开始训练 →</span>
+          </a>
         </div>
       </div>
     </section>
@@ -90,21 +101,9 @@
   <!-- 底部 -->
   <footer class="footer">
     <div class="container">
-      <p>© 2025 楚宝课堂 · 用心做学习</p>
+      <p>© 2026 楚宝课堂 · 用心做学习</p>
     </div>
   </footer>
-
-  <!-- 科目详情弹窗 -->
-  <div class="modal-mask" id="modalMask">
-    <div class="modal" role="dialog" aria-modal="true">
-      <button class="modal-close" id="modalClose" aria-label="关闭">✕</button>
-      <div class="modal-icon" id="modalIcon"></div>
-      <h3 id="modalTitle"></h3>
-      <p class="modal-desc" id="modalDesc"></p>
-      <ul class="point-list" id="modalPoints"></ul>
-      <button class="btn btn-primary" id="modalQuizBtn" style="width:100%">去做练习 →</button>
-    </div>
-  </div>
 
   <!-- 返回顶部 -->
   <button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
